@@ -1987,7 +1987,7 @@ class TDNNLayer(nn.Module):
         hidden_states = nn.functional.unfold(
             hidden_states,
             (self.kernel_size, self.in_conv_dim),
-            stride=(1, self.in_conv_dim),
+            stride=(5, self.in_conv_dim),
             dilation=(self.dilation, 1),
         )
         hidden_states = hidden_states.transpose(1, 2)
