@@ -297,7 +297,7 @@ class Wav2Vec2NoLayerNormConvLayer(nn.Module):
             self.in_conv_dim,
             self.out_conv_dim,
             kernel_size=config.conv_kernel[layer_id],
-            stride=config.conv_stride[layer_id]*2,
+            stride=config.conv_stride[layer_id],
             bias=config.conv_bias,
         )
         self.activation = ACT2FN[config.feat_extract_activation]
@@ -318,7 +318,7 @@ class Wav2Vec2LayerNormConvLayer(nn.Module):
             self.in_conv_dim,
             self.out_conv_dim,
             kernel_size=config.conv_kernel[layer_id],
-            stride=config.conv_stride[layer_id]*2,
+            stride=config.conv_stride[layer_id],
             bias=config.conv_bias,
         )
         self.layer_norm = nn.LayerNorm(self.out_conv_dim, elementwise_affine=True)
@@ -345,7 +345,7 @@ class Wav2Vec2GroupNormConvLayer(nn.Module):
             self.in_conv_dim,
             self.out_conv_dim,
             kernel_size=config.conv_kernel[layer_id],
-            stride=config.conv_stride[layer_id]*2,
+            stride=config.conv_stride[layer_id],
             bias=config.conv_bias,
         )
         self.activation = ACT2FN[config.feat_extract_activation]
@@ -1014,7 +1014,7 @@ class Wav2Vec2AdapterLayer(nn.Module):
             config.output_hidden_size,
             2 * config.output_hidden_size,
             config.adapter_kernel_size,
-            stride=config.adapter_stride*2,
+            stride=config.adapter_stride+1,
             padding=1,
         )
 
@@ -1082,7 +1082,7 @@ class Wav2Vec2PreTrainedModel(PreTrainedModel):
         def _conv_out_length(input_length, kernel_size, stride):
             # 1D convolutional layer output length formula taken
             # from https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html
-            return torch_int_div(input_length - kernel_size, stride)
+            return torch_int_div(input_length - kernel_size, stride) + 1
 
         for kernel_size, stride in zip(self.config.conv_kernel, self.config.conv_stride):
             input_lengths = _conv_out_length(input_lengths, kernel_size, stride)
@@ -2058,7 +2058,7 @@ class Wav2Vec2ForXVector(Wav2Vec2PreTrainedModel):
         def _conv_out_length(input_length, kernel_size, stride):
             # 1D convolutional layer output length formula taken
             # from https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html
-            return (input_length - kernel_size) // stride
+            return (input_length - kernel_size) // stride + 1
 
         for kernel_size in self.config.tdnn_kernel:
             input_lengths = _conv_out_length(input_lengths, kernel_size, 1)
