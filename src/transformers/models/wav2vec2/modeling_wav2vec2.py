@@ -345,7 +345,7 @@ class Wav2Vec2GroupNormConvLayer(nn.Module):
             self.in_conv_dim,
             self.out_conv_dim,
             kernel_size=config.conv_kernel[layer_id],
-            stride=config.conv_stride[layer_id],
+            stride=config.conv_stride[layer_id]-2,
             bias=config.conv_bias,
         )
         self.activation = ACT2FN[config.feat_extract_activation]
