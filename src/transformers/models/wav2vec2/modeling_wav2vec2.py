@@ -318,7 +318,7 @@ class Wav2Vec2LayerNormConvLayer(nn.Module):
             self.in_conv_dim,
             self.out_conv_dim,
             kernel_size=config.conv_kernel[layer_id],
-            stride=7,
+            stride=10,
             #!config.conv_stride[layer_id],
             bias=config.conv_bias,
         )
