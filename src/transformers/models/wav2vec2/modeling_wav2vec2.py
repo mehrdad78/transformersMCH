@@ -1015,7 +1015,8 @@ class Wav2Vec2AdapterLayer(nn.Module):
             config.output_hidden_size,
             2 * config.output_hidden_size,
             config.adapter_kernel_size,
-            stride=config.adapter_stride*2,
+            stride=config.adapter_stride,
+            #!stride=config.adapter_stride*2,
             padding=1,
         )
 
